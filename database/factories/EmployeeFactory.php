@@ -19,21 +19,20 @@ class EmployeeFactory extends Factory
     public function definition(): array
     {
         $gender = $this->faker->randomElement([Person::GENDER_MALE, Person::GENDER_FEMALE]);
-        $religion = $this->faker->randomElement(['ISLAM', 'PROTESTAN', 'KATHOLIK', 'BUDDHA', 'HINDU', 'KONGHUCU']);
+        $religion = $this->faker->randomElement(['islam', 'protestan', 'katolik', 'budha', 'hindu', 'konghucu']);
+
         return [
-            'nip' => $this->faker->randomNumber(5, true),
-            'nik' => $this->faker->nik($gender),
+            'nip' => $this->faker->numberBetween(1000000000),
+            'nik' => $this->faker->unique()->nik($gender),
             'name' => $this->faker->name($gender),
-            'email' => $this->faker->safeEmail(),
+            'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'front_title' => $this->faker->title($gender),
             'rear_title' => $this->faker->title($gender),
-            'gender' => Str::upper($gender),
+            'gender' => $gender,
             'religion' => $religion,
             'birth_date' => $this->faker->date('Y-m-d', '2000-12-31'),
             'birth_place' => $this->faker->city(),
-            'address' => $this->faker->address(),
-            'zip_code' => $this->faker->postcode()
         ];
     }
 }

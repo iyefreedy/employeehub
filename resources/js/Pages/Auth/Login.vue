@@ -1,13 +1,7 @@
 <script setup>
-// import Checkbox from '@/Components/Checkbox.vue';
-// import GuestLayout from '@/Layouts/GuestLayout.vue';
-// import InputError from '@/Components/InputError.vue';
-// import InputLabel from '@/Components/InputLabel.vue';
-// import PrimaryButton from '@/Components/PrimaryButton.vue';
-// import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useLayout } from '@/Composables/layout';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 defineProps({
     canResetPassword: {
@@ -47,9 +41,16 @@ const submit = () => {
                 <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius: 53px">
                     <div class="text-center mb-5">
 
-                        <div class="text-900 text-3xl font-medium mb-3">Welcome, Isabel!</div>
+                        <div class="text-900 text-3xl font-medium mb-3">Welcome, Insan UAI!</div>
                         <span class="text-600 font-medium">Sign in to continue</span>
                     </div>
+                    <template v-if="status != null">
+                        <Message severity="info" :closable="false">{{status}}</Message>
+                    </template>
+
+                    <template v-if="form.errors.email">
+                        <Message severity="error" :closable="false">{{form.errors.email}}</Message>
+                    </template>
 
                     <div>
                         <form @submit.prevent="submit">

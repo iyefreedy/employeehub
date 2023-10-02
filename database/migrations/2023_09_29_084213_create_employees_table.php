@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Address;
+use App\Models\EmployeeStatus;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,12 +23,13 @@ return new class extends Migration
             $table->string('phone', 20);
             $table->string('front_title')->nullable();
             $table->string('rear_title')->nullable();
-            $table->enum('gender', ['MALE', 'FEMALE']);
-            $table->enum('religion', ['ISLAM', 'PROTESTAN', 'KATHOLIK', 'BUDDHA', 'HINDU', 'KONGHUCU']);
+            $table->enum('gender', ['male', 'female']);
+            $table->enum('religion', ['islam', 'protestan', 'katolik', 'budha', 'hindu', 'konghucu']);
             $table->string('birth_place');
             $table->date('birth_date');
-            $table->text('address');
-            $table->string('zip_code', 5);
+            $table->string('image', 100)->nullable();
+            $table->foreignIdFor(User::class)->nullable();
+            $table->foreignIdFor(EmployeeStatus::class)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

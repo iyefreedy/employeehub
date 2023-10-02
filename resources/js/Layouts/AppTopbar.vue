@@ -1,15 +1,24 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { useLayout } from '@/Composables/layout';
-import { Link } from '@inertiajs/vue3';
-
-
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { useLayout } from "@/Composables/layout";
+import { Link, usePage } from "@inertiajs/vue3";
 
 const { layoutConfig, onMenuToggle } = useLayout();
 
+const user = usePage().props.auth.user;
+const employee = user.employee;
+
+const avatarLabel = () => {
+    return employee.name
+        .split(" ")
+        .map((c) => c.charAt(0).toUpperCase())
+        .join("");
+};
+
+console.log(avatarLabel());
+
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
-
 
 onMounted(() => {
     bindOutsideClickListener();
@@ -20,7 +29,9 @@ onBeforeUnmount(() => {
 });
 
 const logoUrl = computed(() => {
-    return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+    return `layout/images/${
+        layoutConfig.darkTheme.value ? "logo-white" : "logo-dark"
+    }.svg`;
 });
 
 const onTopBarMenuButton = () => {
@@ -28,11 +39,10 @@ const onTopBarMenuButton = () => {
 };
 const onSettingsClick = () => {
     topbarMenuActive.value = false;
-
 };
 const topbarMenuClasses = computed(() => {
     return {
-        'layout-topbar-menu-mobile-active': topbarMenuActive.value
+        "layout-topbar-menu-mobile-active": topbarMenuActive.value,
     };
 });
 
@@ -43,55 +53,83 @@ const bindOutsideClickListener = () => {
                 topbarMenuActive.value = false;
             }
         };
-        document.addEventListener('click', outsideClickListener.value);
+        document.addEventListener("click", outsideClickListener.value);
     }
 };
 const unbindOutsideClickListener = () => {
     if (outsideClickListener.value) {
-        document.removeEventListener('click', outsideClickListener);
+        document.removeEventListener("click", outsideClickListener);
         outsideClickListener.value = null;
     }
 };
 const isOutsideClicked = (event) => {
     if (!topbarMenuActive.value) return;
 
-    const sidebarEl = document.querySelector('.layout-topbar-menu');
-    const topbarEl = document.querySelector('.layout-topbar-menu-button');
+    const sidebarEl = document.querySelector(".layout-topbar-menu");
+    const topbarEl = document.querySelector(".layout-topbar-menu-button");
 
-    return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
+    return !(
+        sidebarEl.isSameNode(event.target) ||
+        sidebarEl.contains(event.target) ||
+        topbarEl.isSameNode(event.target) ||
+        topbarEl.contains(event.target)
+    );
 };
 </script>
 
 <template>
     <div class="layout-topbar">
         <Link href="/" class="layout-topbar-logo">
-        <img :src="logoUrl" alt="logo" />
-        <span>EmployeeHub</span>
+            <img :src="logoUrl" alt="logo" />
+            <span>EmployeeHub</span>
         </Link>
 
-        <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
+        <button
+            class="p-link layout-menu-button layout-topbar-button"
+            @click="onMenuToggle()"
+        >
             <i class="pi pi-bars"></i>
         </button>
 
-        <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
+        <button
+            class="p-link layout-topbar-menu-button layout-topbar-button"
+            @click="onTopBarMenuButton()"
+        >
             <i class="pi pi-ellipsis-v"></i>
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
+            <button
+                @click="onTopBarMenuButton()"
+                class="p-link layout-topbar-button"
+            >
                 <i class="pi pi-calendar"></i>
                 <span>Calendar</span>
             </button>
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
+            <button
+                @click="onTopBarMenuButton()"
+                class="p-link layout-topbar-button"
+            >
                 <i class="pi pi-user"></i>
                 <span>Profile</span>
             </button>
-            <button @click="onSettingsClick()" class="p-link layout-topbar-button">
+            <button
+                @click="onSettingsClick()"
+                class="p-link layout-topbar-button"
+            >
                 <i class="pi pi-cog"></i>
                 <span>Settings</span>
+            </button>
+
+            <button @click="onSettingsClick()" class="p-link ml-4">
+                <Avatar
+                    :label="avatarLabel()"
+                    :image="employee.image"
+                    class="mr-2"
+                    style="background-color: #9c27b0; color: #ffffff"
+                    shape="circle"
+                />
             </button>
         </div>
     </div>
 </template>
-
-<style lang="scss" scoped></style>
